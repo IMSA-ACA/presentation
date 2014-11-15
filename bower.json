@@ -2,6 +2,6 @@
   "name": "web",
   "private": true,
   "dependencies": {
-    "bootstrap-sass-official": "~3.2.0"
+    "bootswatch-dist": "3.3.0-cosmo"
   }
 }

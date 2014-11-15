@@ -48,6 +48,10 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
+      jade: {
+        files: ['<%= config.app %>/{,*/}*.jade'],
+        tasks: ['jade']
+      },
       sass: {
         files: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['sass:server', 'autoprefixer']
@@ -61,9 +65,9 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          '<%= config.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
-          '<%= config.app %>/images/{,*/}*'
+        '.tmp/{,*/}*.html',
+        '.tmp/styles/{,*/}*.css',
+        '<%= config.app %>/images/{,*/}*'
         ]
       }
     },
@@ -81,9 +85,9 @@ module.exports = function (grunt) {
         options: {
           middleware: function(connect) {
             return [
-              connect.static('.tmp'),
-              connect().use('/bower_components', connect.static('./bower_components')),
-              connect.static(config.app)
+            connect.static('.tmp'),
+            connect().use('/bower_components', connect.static('./bower_components')),
+            connect.static(config.app)
             ];
           }
         }
@@ -94,10 +98,10 @@ module.exports = function (grunt) {
           port: 9001,
           middleware: function(connect) {
             return [
-              connect.static('.tmp'),
-              connect.static('test'),
-              connect().use('/bower_components', connect.static('./bower_components')),
-              connect.static(config.app)
+            connect.static('.tmp'),
+            connect.static('test'),
+            connect().use('/bower_components', connect.static('./bower_components')),
+            connect.static(config.app)
             ];
           }
         }
@@ -116,9 +120,9 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
-            '.tmp',
-            '<%= config.dist %>/*',
-            '!<%= config.dist %>/.git*'
+          '.tmp',
+          '<%= config.dist %>/*',
+          '!<%= config.dist %>/.git*'
           ]
         }]
       },
@@ -132,10 +136,10 @@ module.exports = function (grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
-        'Gruntfile.js',
-        '<%= config.app %>/scripts/{,*/}*.js',
-        '!<%= config.app %>/scripts/vendor/*',
-        'test/spec/{,*/}*.js'
+      'Gruntfile.js',
+      '<%= config.app %>/scripts/{,*/}*.js',
+      '!<%= config.app %>/scripts/vendor/*',
+      'test/spec/{,*/}*.js'
       ]
     },
 
@@ -154,7 +158,7 @@ module.exports = function (grunt) {
       options: {
         sourceMap: true,
         includePaths: ['bower_components']
-        },
+      },
       dist: {
         files: [{
           expand: true,
@@ -203,16 +207,31 @@ module.exports = function (grunt) {
       }
     },
 
+    jade: {
+      dist: {
+        options: {
+          pretty: true
+        },
+        files: [{
+          expand: true,
+          cwd: '<%= config.app %>',
+          dest: '.tmp',
+          src: '**/*.jade',
+          ext: '.html'
+        }]
+      }
+    },
+
     // Renames files for browser caching purposes
     rev: {
       dist: {
         files: {
           src: [
-            '<%= config.dist %>/scripts/{,*/}*.js',
-            '<%= config.dist %>/styles/{,*/}*.css',
-            '<%= config.dist %>/images/{,*/}*.*',
-            '<%= config.dist %>/styles/fonts/{,*/}*.*',
-            '<%= config.dist %>/*.{ico,png}'
+          '<%= config.dist %>/scripts/{,*/}*.js',
+          '<%= config.dist %>/styles/{,*/}*.css',
+          '<%= config.dist %>/images/{,*/}*.*',
+          '<%= config.dist %>/styles/fonts/{,*/}*.*',
+          '<%= config.dist %>/*.{ico,png}'
           ]
         }
       }
@@ -225,16 +244,16 @@ module.exports = function (grunt) {
       options: {
         dest: '<%= config.dist %>'
       },
-      html: '<%= config.app %>/index.html'
+      html: '.tmp/index.html'
     },
 
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
       options: {
         assetsDirs: [
-          '<%= config.dist %>',
-          '<%= config.dist %>/images',
-          '<%= config.dist %>/styles'
+        '<%= config.dist %>',
+        '<%= config.dist %>/images',
+        '<%= config.dist %>/styles'
         ]
       },
       html: ['<%= config.dist %>/{,*/}*.html'],
@@ -279,7 +298,7 @@ module.exports = function (grunt) {
         },
         files: [{
           expand: true,
-          cwd: '<%= config.dist %>',
+          cwd: '.tmp',
           src: '{,*/}*.html',
           dest: '<%= config.dist %>'
         }]
@@ -321,10 +340,10 @@ module.exports = function (grunt) {
           cwd: '<%= config.app %>',
           dest: '<%= config.dist %>',
           src: [
-            '*.{ico,png,txt}',
-            'images/{,*/}*.webp',
-            '{,*/}*.html',
-            'styles/fonts/{,*/}*.*'
+          '*.{ico,png,txt}',
+          'images/{,*/}*.webp',
+          '{,*/}*.html',
+          'styles/fonts/{,*/}*.*'
           ]
         }, {
           src: 'node_modules/apache-server-configs/dist/.htaccess',
@@ -349,17 +368,17 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up build process
     concurrent: {
       server: [
-        'sass:server',
-        'copy:styles'
+      'sass:server',
+      'copy:styles'
       ],
       test: [
-        'copy:styles'
+      'copy:styles'
       ],
       dist: [
-        'sass',
-        'copy:styles',
-        'imagemin',
-        'svgmin'
+      'sass',
+      'copy:styles',
+      'imagemin',
+      'svgmin'
       ]
     }
   });
@@ -376,51 +395,53 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'wiredep',
+      'jade',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
       'watch'
-    ]);
-  });
-
-  grunt.registerTask('server', function (target) {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run([target ? ('serve:' + target) : 'serve']);
-  });
-
-  grunt.registerTask('test', function (target) {
-    if (target !== 'watch') {
-      grunt.task.run([
-        'clean:server',
-        'concurrent:test',
-        'autoprefixer'
       ]);
-    }
+    });
 
-    grunt.task.run([
-      'connect:test',
-      'mocha'
-    ]);
-  });
+    grunt.registerTask('server', function (target) {
+      grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
+      grunt.task.run([target ? ('serve:' + target) : 'serve']);
+    });
 
-  grunt.registerTask('build', [
-    'clean:dist',
-    'wiredep',
-    'useminPrepare',
-    'concurrent:dist',
-    'autoprefixer',
-    'concat',
-    'cssmin',
-    'uglify',
-    'copy:dist',
-    'rev',
-    'usemin',
-    'htmlmin'
-  ]);
+    grunt.registerTask('test', function (target) {
+      if (target !== 'watch') {
+        grunt.task.run([
+          'clean:server',
+          'concurrent:test',
+          'autoprefixer'
+          ]);
+        }
 
-  grunt.registerTask('default', [
-    'newer:jshint',
-    'test',
-    'build'
-  ]);
-};
+        grunt.task.run([
+          'connect:test',
+          'mocha'
+          ]);
+        });
+
+        grunt.registerTask('build', [
+        'clean:dist',
+        'wiredep',
+        'jade',
+        'useminPrepare',
+        'concurrent:dist',
+        'autoprefixer',
+        'concat',
+        'cssmin',
+        'uglify',
+        'copy:dist',
+        'rev',
+        'usemin',
+        'htmlmin'
+        ]);
+
+        grunt.registerTask('default', [
+        'newer:jshint',
+        'test',
+        'build'
+        ]);
+      };
