@@ -1,5 +1,11 @@
+# package managers
 node_modules
+bower_components
+
+# built files
 dist
 .tmp
 .sass-cache
-bower_components
+
+# editor config
+.editorconfig
