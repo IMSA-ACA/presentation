@@ -214,8 +214,8 @@ module.exports = function (grunt) {
         },
         files: [{
           expand: true,
-          cwd: '<%= config.app %>',
-          dest: '.tmp',
+          cwd: '<%= config.app %>/views',
+          dest: '.tmp/',
           src: '**/*.jade',
           ext: '.html'
         }]
